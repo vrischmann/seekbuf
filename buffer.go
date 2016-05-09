@@ -17,7 +17,6 @@ func (b *Buffer) Bytes() []byte {
 }
 
 // Read reads the next len(p) bytes from the buffer starting from the current position.
-//
 func (b *Buffer) Read(p []byte) (int, error) {
 	if len(p) == 0 {
 		return 0, nil
@@ -33,7 +32,7 @@ func (b *Buffer) Read(p []byte) (int, error) {
 	return n, nil
 }
 
-// Write the contents of p in the buffer at the current position.
+// Write the contents of p in the buffer at the current position, growing the buffer if needed.
 func (b *Buffer) Write(p []byte) (int, error) {
 	n := copy(b.data[b.pos:], p)
 	b.data = append(b.data, p[n:]...)
@@ -43,8 +42,7 @@ func (b *Buffer) Write(p []byte) (int, error) {
 }
 
 // Seek sets the offset for the next Read or Write on the buffer to offset, interpreted according to whence:
-// 0 means relative to the origin of the file, 1 means relative to the current offset,
-// and 2 means relative to the end.
+// 0 means relative to the origin of the buffer, 1 means relative to the current offset, and 2 means relative to the end.
 // It returns the new offset and an error, if any.
 func (b *Buffer) Seek(offset int64, whence int) (int64, error) {
 	o := int(offset)
