@@ -60,10 +60,10 @@ func (b *Buffer) Seek(offset int64, whence int) (int64, error) {
 		b.pos = o
 
 	case os.SEEK_END:
-		if len(b.data)-o < 0 {
+		if len(b.data)+o < 0 {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
-		b.pos = len(b.data) - o
+		b.pos = len(b.data) + o
 
 	default:
 		return -1, fmt.Errorf("invalid whence %d", whence)

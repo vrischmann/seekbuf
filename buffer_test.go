@@ -117,7 +117,7 @@ func TestReadWriteSeekEnd(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 6, n)
 
-	n2, err := b.Seek(1, os.SEEK_END)
+	n2, err := b.Seek(-1, os.SEEK_END)
 	require.Nil(t, err)
 	require.Equal(t, int64(5), n2)
 
