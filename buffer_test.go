@@ -2,6 +2,7 @@ package seekbuf_test
 
 import (
 	"io"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -27,7 +28,7 @@ func TestReadWrite(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 6, n)
 
-	b.Seek(0, io.SeekStart)
+	b.Seek(0, os.SEEK_SET)
 
 	var data [6]byte
 	n, err = b.Read(data[:])
@@ -43,7 +44,7 @@ func TestReadWriteBiggerReadBuf(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 3, n)
 
-	b.Seek(0, io.SeekStart)
+	b.Seek(0, os.SEEK_SET)
 
 	var data [6]byte
 	n, err = b.Read(data[:])
@@ -69,7 +70,7 @@ func TestReadWriteSeekSet(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 6, n)
 
-	b.Seek(0, io.SeekStart)
+	b.Seek(0, os.SEEK_SET)
 
 	var data [6]byte
 	n, err = b.Read(data[:])
@@ -77,7 +78,7 @@ func TestReadWriteSeekSet(t *testing.T) {
 	require.Equal(t, 6, n)
 	require.Equal(t, "foobar", string(data[:]))
 
-	n2, err := b.Seek(0, io.SeekStart)
+	n2, err := b.Seek(0, os.SEEK_SET)
 	require.Nil(t, err)
 	require.Equal(t, int64(0), n2)
 
@@ -94,14 +95,14 @@ func TestReadWriteSeekCur(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 6, n)
 
-	n2, err := b.Seek(3, io.SeekStart)
+	n2, err := b.Seek(3, os.SEEK_SET)
 	require.Nil(t, err)
 	require.Equal(t, int64(3), n2)
 
 	require.Equal(t, 3, len(b.Bytes()))
 	require.Equal(t, "bar", string(b.Bytes()))
 
-	n2, err = b.Seek(1, io.SeekCurrent)
+	n2, err = b.Seek(1, os.SEEK_CUR)
 	require.Nil(t, err)
 	require.Equal(t, int64(4), n2)
 
@@ -116,7 +117,7 @@ func TestReadWriteSeekEnd(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 6, n)
 
-	n2, err := b.Seek(-1, io.SeekEnd)
+	n2, err := b.Seek(-1, os.SEEK_END)
 	require.Nil(t, err)
 	require.Equal(t, int64(5), n2)
 
@@ -127,15 +128,15 @@ func TestReadWriteSeekEnd(t *testing.T) {
 func TestSeekEmpty(t *testing.T) {
 	var b seekbuf.Buffer
 
-	n, err := b.Seek(0, io.SeekStart)
+	n, err := b.Seek(0, os.SEEK_SET)
 	require.Nil(t, err)
 	require.Equal(t, int64(0), n)
 
-	n, err = b.Seek(0, io.SeekCurrent)
+	n, err = b.Seek(0, os.SEEK_CUR)
 	require.Nil(t, err)
 	require.Equal(t, int64(0), n)
 
-	n, err = b.Seek(0, io.SeekEnd)
+	n, err = b.Seek(0, os.SEEK_END)
 	require.Nil(t, err)
 	require.Equal(t, int64(0), n)
 }
@@ -145,15 +146,15 @@ func TestSeekZeroNotEmpty(t *testing.T) {
 
 	b.Write([]byte("foobar"))
 
-	n, err := b.Seek(0, io.SeekStart)
+	n, err := b.Seek(0, os.SEEK_SET)
 	require.Nil(t, err)
 	require.Equal(t, int64(0), n)
 
-	n, err = b.Seek(0, io.SeekCurrent)
+	n, err = b.Seek(0, os.SEEK_CUR)
 	require.Nil(t, err)
 	require.Equal(t, int64(0), n)
 
-	n, err = b.Seek(0, io.SeekEnd)
+	n, err = b.Seek(0, os.SEEK_END)
 	require.Nil(t, err)
 	require.Equal(t, int64(6), n)
 }
@@ -162,10 +163,10 @@ func TestSeekOverwrite(t *testing.T) {
 	var b seekbuf.Buffer
 
 	b.Write([]byte("foobar"))
-	b.Seek(0, io.SeekStart)
+	b.Seek(0, os.SEEK_SET)
 	b.Write([]byte("baz"))
 
-	b.Seek(0, io.SeekStart)
+	b.Seek(0, os.SEEK_SET)
 
 	require.Equal(t, "bazbar", string(b.Bytes()))
 }
@@ -180,7 +181,7 @@ func TestWrite(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 6, n)
 
-	b.Seek(0, io.SeekStart)
+	b.Seek(0, os.SEEK_SET)
 
 	require.Equal(t, "foobarquxbaz", string(b.Bytes()))
 }
@@ -191,7 +192,7 @@ func TestNew(t *testing.T) {
 
 	require.Equal(t, "foobarquxbaz", string(b.Bytes()))
 
-	n, err := b.Seek(3, io.SeekStart)
+	n, err := b.Seek(3, os.SEEK_SET)
 	require.NoError(t, err)
 	require.Equal(t, int64(3), n)
 
