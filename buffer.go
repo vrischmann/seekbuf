@@ -3,7 +3,6 @@ package seekbuf
 import (
 	"fmt"
 	"io"
-	"os"
 )
 
 type Buffer struct {
@@ -51,19 +50,19 @@ func (b *Buffer) Write(p []byte) (int, error) {
 func (b *Buffer) Seek(offset int64, whence int) (int64, error) {
 	o := int(offset)
 	switch whence {
-	case os.SEEK_CUR:
+	case io.SeekCurrent:
 		if o > 0 && b.pos+o >= len(b.data) {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
 		b.pos += o
 
-	case os.SEEK_SET:
+	case io.SeekStart:
 		if o > 0 && o >= len(b.data) {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
 		b.pos = o
 
-	case os.SEEK_END:
+	case io.SeekEnd:
 		if len(b.data)+o < 0 {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
