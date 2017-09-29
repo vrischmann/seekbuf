@@ -44,25 +44,31 @@ func (b *Buffer) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
+const (
+	seekStart   = 0
+	seekCurrent = 1
+	seekEnd     = 2
+)
+
 // Seek sets the offset for the next Read or Write on the buffer to offset, interpreted according to whence:
 // 0 means relative to the origin of the buffer, 1 means relative to the current offset, and 2 means relative to the end.
 // It returns the new offset and an error, if any.
 func (b *Buffer) Seek(offset int64, whence int) (int64, error) {
 	o := int(offset)
 	switch whence {
-	case io.SeekCurrent:
+	case seekCurrent:
 		if o > 0 && b.pos+o >= len(b.data) {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
 		b.pos += o
 
-	case io.SeekStart:
+	case seekStart:
 		if o > 0 && o >= len(b.data) {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
 		b.pos = o
 
-	case io.SeekEnd:
+	case seekEnd:
 		if len(b.data)+o < 0 {
 			return -1, fmt.Errorf("invalid offset %d", offset)
 		}
