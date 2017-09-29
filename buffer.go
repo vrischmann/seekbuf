@@ -11,6 +11,10 @@ type Buffer struct {
 	pos  int
 }
 
+func New(p []byte) *Buffer {
+	return &Buffer{data: p}
+}
+
 // Bytes returns a slice holding the data from the current position up to the end.
 func (b *Buffer) Bytes() []byte {
 	return b.data[b.pos:]

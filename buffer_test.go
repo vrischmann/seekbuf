@@ -185,3 +185,20 @@ func TestWrite(t *testing.T) {
 
 	require.Equal(t, "foobarquxbaz", string(b.Bytes()))
 }
+
+func TestNew(t *testing.T) {
+	data := []byte("foobarquxbaz")
+	b := seekbuf.New(data)
+
+	require.Equal(t, "foobarquxbaz", string(b.Bytes()))
+
+	n, err := b.Seek(3, io.SeekStart)
+	require.NoError(t, err)
+	require.Equal(t, int64(3), n)
+
+	var buf [10]byte
+	n2, err := b.Read(buf[:])
+	require.NoError(t, err)
+	require.Equal(t, 9, n2)
+	require.Equal(t, "barquxbaz", string(buf[:n2]))
+}
